@@ -1,47 +1,61 @@
 #include <SoftwareSerial.h>
 char t;
 int p ;
-int speed;
-int enA=4;
-int enB=5;
 SoftwareSerial BT(2,3);
-bool Extra ;
+const int trigPin = 6;
+const int echoPin = 8;
+int distance;
+long duration;
 
 void setup() {
 pinMode(7,OUTPUT);   //left motors  forward
 pinMode(12,OUTPUT);   //left motors reverse
 pinMode(11,OUTPUT);   //right  motors forward
 pinMode(10,OUTPUT);   //right motors reverse
-pinMode(enA,OUTPUT);
-pinMode(enB,OUTPUT);
 pinMode(9,OUTPUT);   //Led
 pinMode(13,OUTPUT);  // buzzer
+pinMode(trigPin,OUTPUT);
+pinMode(echoPin,INPUT);
 Serial.begin(9600);
 BT.begin(9600);
-speed = 255;
+t = 'Z';
  
 }
 void forward(){
-  digitalWrite(7,HIGH);
-  digitalWrite(10,HIGH);
+  digitalWrite(7,HIGH);  //left motor fwd
+  digitalWrite(10,HIGH); //right motor fwd
 }
 void back(){
-   digitalWrite(12,HIGH);
-  digitalWrite(11,HIGH);
+   digitalWrite(12,HIGH); //left motor moves back
+  digitalWrite(11,HIGH);  //right motor moves back
 }
 void left(){
-  digitalWrite(7,HIGH);
-  digitalWrite(11,HIGH);
+  digitalWrite(7,HIGH);   // left motor back
+  digitalWrite(11,HIGH);  // right motor fwd
 }
 void right(){
-    digitalWrite(10,HIGH);
-  digitalWrite(12,HIGH);
+    digitalWrite(10,HIGH); //left motor fwd
+  digitalWrite(12,HIGH);   //right motor back
 }
 void stop(){
-   digitalWrite(7,LOW);
+  digitalWrite(7,LOW);     //stop
   digitalWrite(12,LOW);
   digitalWrite(11,LOW);
   digitalWrite(10,LOW);
+}
+// this function will calculate distance of object from vehicle
+int Distance(){
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(1);
+  // Sets the trigPin on HIGH state for 5 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(5);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  distance = duration * 0.034 / 2;
+  return distance;
 }
  
 void loop() {
@@ -50,77 +64,9 @@ if(BT.available()){
   p = BT.read();
   Serial.println(t);
 }
-if(t == 'F'){            //move  forward(all motors rotate in forward direction)
-  forward();
-}
-else if(t == 'B'){      //move reverse (all  motors rotate in reverse direction)
-  back();
-}
-  
-else if(t == 'L'){      //turn right (left side motors rotate in forward direction,  right side motors doesn't rotate)
-  left();
-}
- 
-else  if(t == 'R'){      //turn left (right side motors rotate in forward direction, left  side motors doesn't rotate)
-  right();
-}
-
-else if(t ==  'W'){    //turn led on or off)
-  digitalWrite(9,HIGH);
-}
-else if(t == 'w'){
-  digitalWrite(9,LOW);
-}
-else if(t == 'V'){
-  digitalWrite(13,HIGH);
-}
-else if(t == 'v'){
-  digitalWrite(13,LOW);
-}else if(t== 'X'){
-Extra = true;
-}else if (t == 'x'){
-  Extra = false;
-}
-if (Extra){
-
-}
- 
-else if(t == 'S'){      //STOP (all motors stop)
-  stop();
-}
-if(p == '1'){
-speed = 100;
-}
-else if(p == '2'){
-speed = 130;
-}
-else if(p == '3'){
-speed = 150;
-}
-else if(p == '4'){
-speed = 180;
-}
-else if(p == '5'){
-speed = 200;
-}
-else if(p == '6'){
-speed = 210;
-}
-else if(p == '7'){
-speed = 220;
-}
-else if(p == '8'){
-speed = 230;
-}
-else if(p == '9'){
-speed = 255;
-}
-
-analogWrite(enA,speed);
-analogWrite(enB,speed); 
-delay(1);
-}
-/* if (wallDist()<2){
+if(t == 'F'){ 
+  int p = Distance() ;  
+  if (p<2 && p>0){
   stop ();
   digitalWrite(13,HIGH);
   delay(100);
@@ -130,6 +76,35 @@ delay(1);
   delay(300);
   stop();
   digitalWrite(13,LOW);
-  delay (1);
+  }  else forward();
+}  
+else if(t == 'S'){      //STOP (all motors stop)
+  stop();
+}
+
+else if(t == 'B'){      //move reverse (all  motors rotate in reverse direction)
+  back();
+}
   
-}*/
+else if(t == 'L'){      //turn left (left side motors rotate in forward direction,  right side motors rotate back)
+  left();
+}
+ 
+else  if(t == 'R'){      //turn right (right side motors rotate in forward direction, left  side motors rotate backwards)
+  right();
+}
+
+else if(t ==  'W'){    //turn led on 
+  digitalWrite(9,HIGH);
+}
+else if(t == 'w'){       //turn led of 
+  digitalWrite(9,LOW);
+}
+else if(t == 'V'){       // turn buzzer onn
+  digitalWrite(13,HIGH);
+}
+else if(t == 'v'){
+  digitalWrite(13,LOW);   // turn buzzer off
+}
+}
+
