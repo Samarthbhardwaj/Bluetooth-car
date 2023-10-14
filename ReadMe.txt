@@ -1,15 +1,9 @@
 Hello Guys!
-My name is Samart Bhardwaj 
+My Name is Samarth Bhardwaj 
 Gmail: samarthbhardwaj25@gmail.com
-Curently persuing btech (Cse)
+Curently pursuing btech (Cse)
 
-This is my Basic project which i created to get the basic knowledge of arduino workin and language
-This project actually helped me alot in alot of ways in terms of IOT,arduino IDE more.
-
-
-This is blutooth controlled car which has obsiticle avoidence capability 
-the car runs on command send by phone thru the blutooth 
-Motor driver plays a crucial role in it as well as arduino 
+The aim of this project was to learn the basics of Arduino programming and hardware. The project involved creating a Bluetooth-controlled car that can avoid obstacles using sensors. The car was controlled by a smartphone app that sent commands via Bluetooth. The motor driver and the Arduino board were the key components of the car’s circuit. This project helped me gain valuable skills and knowledge in the field of IoT and Arduino IDE.
 
 ITEMS REQUIRED:
 4/2-Gear motors
